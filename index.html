@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AT&T Dynamic Defense — IPTECH SV</title>
+<style>
+  /* ============ THEME ============ */
+  :root{
+    --att-blue:#003A70;
+    --att-light:#009FDB;
+    --att-orange:#E87722;
+    --bg:#0a0e1a;
+    --panel:#10162a;
+    --panel2:#161d36;
+    --line:#1f2746;
+    --text:#e6ecff;
+    --muted:#8a93b4;
+    --green:#22c55e;
+    --red:#ef4444;
+    --yellow:#f59e0b;
+    --say-bg:#0d1f3a;
+    --say-border:#009FDB;
+    --ask-bg:#1a1430;
+    --ask-border:#a855f7;
+    --warn-bg:#3b2410;
+    --warn-border:#E87722;
+    --compliance-bg:#3a1414;
+    --compliance-border:#ef4444;
+    --branch-yes:#0f2e1f;
+    --branch-yes-border:#22c55e;
+    --branch-no:#3a1414;
+    --branch-no-border:#ef4444;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;line-height:1.5}
+  a{color:var(--att-light);text-decoration:none}
+
+  /* ============ LAYOUT ============ */
+  .app{display:grid;grid-template-columns:240px 1fr 420px;height:100vh;overflow:hidden}
+  @media (max-width:1200px){.app{grid-template-columns:200px 1fr 380px}}
+  @media (max-width:980px){.app{grid-template-columns:1fr;grid-template-rows:auto 1fr auto;height:auto}}
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:18px 14px}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .brand-logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--att-blue),var(--att-light));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px}
+  .brand-text{font-weight:700;font-size:15px}
+  .brand-sub{font-size:11px;color:var(--muted);margin-bottom:18px}
+  .nav-title{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:14px 6px 8px}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);border:1px solid transparent;margin-bottom:3px;transition:all 0.15s}
+  .nav-item:hover{background:var(--panel2);border-color:var(--line)}
+  .nav-item.active{background:linear-gradient(90deg,rgba(0,159,219,0.15),transparent);border-color:var(--att-light);color:#fff}
+  .nav-num{width:24px;height:24px;border-radius:50%;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--att-light);flex-shrink:0}
+  .nav-item.active .nav-num{background:var(--att-light);color:#fff}
+  .sidebar-foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);text-align:center}
+
+  /* ============ SCRIPT PANEL ============ */
+  .script{overflow-y:auto;padding:24px 32px;background:var(--bg)}
+  @media (max-width:980px){.script{padding:18px}}
+
+  .header-bar{position:sticky;top:0;background:var(--bg);padding:6px 0 14px;margin-bottom:14px;border-bottom:1px solid var(--line);z-index:5}
+  .header-bar h1{margin:0;font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px}
+  .header-bar .sub{font-size:12px;color:var(--muted);margin-top:3px}
+  .warn-pill{display:inline-flex;align-items:center;gap:6px;background:var(--warn-bg);color:var(--att-orange);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;margin-top:8px;border:1px solid var(--warn-border)}
+
+  .phase{display:none;animation:fadeIn 0.2s ease}
+  .phase.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  .phase-head{margin:0 0 6px;font-size:24px;font-weight:800;color:#fff}
+  .phase-sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+
+  /* Speech tags */
+  .tag{display:inline-block;padding:3px 10px;font-size:11px;font-weight:800;letter-spacing:1px;border-radius:4px;margin-bottom:6px;text-transform:uppercase}
+  .tag.say{background:var(--say-border);color:#fff}
+  .tag.ask{background:var(--ask-border);color:#fff}
+  .tag.transition{background:var(--muted);color:#fff}
+  .tag.tip{background:var(--att-orange);color:#fff}
+
+  /* Script lines */
+  .say-line{background:var(--say-bg);border-left:4px solid var(--say-border);padding:14px 18px;border-radius:0 8px 8px 0;margin:6px 0 16px;font-size:15px;color:#dbe6ff}
+  .ask-line{background:var(--ask-bg);border-left:4px solid var(--ask-border);padding:14px 18px;border-radius:0 8px 8px 0;margin:6px 0 16px;font-size:15px;color:#e6dbff}
+  .warn{background:var(--warn-bg);border:1px solid var(--warn-border);color:#ffd9b8;padding:10px 14px;border-radius:6px;font-size:13px;margin:12px 0;display:flex;align-items:flex-start;gap:8px}
+  .warn::before{content:"⚠";font-size:16px;line-height:1.2}
+  .compliance{background:var(--compliance-bg);border:1px solid var(--compliance-border);color:#ffd1d1;padding:12px 16px;border-radius:6px;font-size:13px;margin:14px 0;font-weight:500}
+  .compliance b{color:#ff7070}
+
+  .tip-box{background:rgba(232,119,34,0.08);border-left:3px solid var(--att-orange);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:13px;color:#ffd9b8}
+  .tip-box b{color:var(--att-orange)}
+
+  /* Branch boxes (IF YES / IF NO) */
+  .branches{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  @media (max-width:680px){.branches{grid-template-columns:1fr}}
+  .branch{padding:14px;border-radius:8px;font-size:13px}
+  .branch.yes{background:var(--branch-yes);border:1px solid var(--branch-yes-border)}
+  .branch.no{background:var(--branch-no);border:1px solid var(--branch-no-border)}
+  .branch .lbl{display:inline-block;font-weight:800;font-size:11px;letter-spacing:1px;padding:2px 8px;border-radius:4px;margin-bottom:8px}
+  .branch.yes .lbl{background:var(--branch-yes-border);color:#fff}
+  .branch.no .lbl{background:var(--branch-no-border);color:#fff}
+
+  /* Order details list */
+  .order-list{counter-reset:order;list-style:none;padding:0;margin:14px 0}
+  .order-list li{counter-increment:order;position:relative;padding:12px 14px 12px 50px;background:var(--panel);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;font-size:14px}
+  .order-list li::before{content:counter(order);position:absolute;left:12px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--att-light);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+
+  /* Objections table */
+  table.obj{width:100%;border-collapse:collapse;margin:14px 0;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  table.obj thead th{background:var(--att-blue);color:#fff;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.8px}
+  table.obj td{padding:12px 14px;border-top:1px solid var(--line);vertical-align:top;font-size:13px}
+  table.obj td:first-child{font-weight:600;color:var(--att-light);width:32%}
+
+  /* Quick facts */
+  .qf{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 18px;margin:14px 0}
+  .qf h3{margin:0 0 10px;font-size:13px;color:var(--att-light);text-transform:uppercase;letter-spacing:1px}
+  .qf ul{margin:0;padding-left:18px;font-size:13px;color:#dbe6ff}
+  .qf li{margin-bottom:4px}
+
+  /* Checklist */
+  .checklist{list-style:none;padding:0;margin:14px 0}
+  .checklist li{padding:10px 14px;background:var(--panel);border:1px solid var(--line);border-radius:6px;margin-bottom:6px;font-size:13px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:all 0.15s}
+  .checklist li:hover{border-color:var(--att-light)}
+  .checklist li.checked{background:rgba(34,197,94,0.08);border-color:var(--green);text-decoration:line-through;opacity:0.7}
+  .cb{width:18px;height:18px;border:2px solid var(--muted);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-weight:800;color:transparent;transition:all 0.15s}
+  .checklist li.checked .cb{background:var(--green);border-color:var(--green);color:#fff}
+
+  /* Phase nav buttons */
+  .phase-nav{display:flex;justify-content:space-between;margin:24px 0 12px;gap:10px}
+  .pbtn{flex:1;padding:10px 14px;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.15s}
+  .pbtn:hover{border-color:var(--att-light);color:var(--att-light)}
+  .pbtn:disabled{opacity:0.3;cursor:not-allowed}
+
+  /* ============ FORM PANEL ============ */
+  .formpanel{background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding:20px}
+  .formpanel h2{margin:0 0 4px;font-size:16px;color:#fff;display:flex;align-items:center;gap:8px}
+  .formpanel .form-sub{color:var(--muted);font-size:12px;margin-bottom:16px}
+  .form-warning{background:var(--compliance-bg);border:1px solid var(--compliance-border);color:#ffd1d1;padding:9px 12px;border-radius:6px;font-size:12px;margin-bottom:16px;font-weight:500}
+
+  .fgroup{margin-bottom:18px}
+  .fgroup h4{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--att-light);font-weight:700;border-bottom:1px solid var(--line);padding-bottom:6px}
+
+  .field{margin-bottom:10px}
+  .field label{display:block;font-size:12px;font-weight:600;color:#cfd6f0;margin-bottom:4px}
+  .field label .req{color:var(--red);margin-left:2px}
+  .field input,.field textarea,.field select{width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:all 0.15s}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--att-light);background:var(--panel2)}
+  .field textarea{resize:vertical;min-height:60px}
+  .field .hint{font-size:11px;color:var(--muted);margin-top:3px}
+
+  .radio-row{display:flex;gap:8px}
+  .radio-row label{flex:1;display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--bg);border:1px solid var(--line);border-radius:6px;cursor:pointer;font-size:12px;transition:all 0.15s}
+  .radio-row label:hover{border-color:var(--att-light)}
+  .radio-row input{width:auto;margin:0}
+  .radio-row label:has(input:checked){background:rgba(0,159,219,0.1);border-color:var(--att-light)}
+
+  .submit-row{display:flex;gap:8px;margin-top:14px}
+  .btn{padding:11px 16px;border-radius:6px;font-weight:700;cursor:pointer;font-size:13px;border:none;transition:all 0.15s}
+  .btn-primary{background:linear-gradient(135deg,var(--att-blue),var(--att-light));color:#fff;flex:1}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,159,219,0.3)}
+  .btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+  .btn-secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  .btn-secondary:hover{border-color:var(--red);color:var(--red)}
+
+  .success-screen{display:none;text-align:center;padding:40px 20px}
+  .success-screen.active{display:block}
+  .success-screen .check{width:64px;height:64px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 16px}
+  .success-screen h3{margin:0 0 6px;color:#fff;font-size:18px}
+  .success-screen p{color:var(--muted);font-size:13px;margin-bottom:18px}
+
+  /* Mobile phase pills */
+  .mobile-phases{display:none;overflow-x:auto;gap:6px;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line)}
+  @media (max-width:980px){.mobile-phases{display:flex}.sidebar{display:none}}
+  .mobile-phases .nav-item{flex-shrink:0;font-size:12px;padding:6px 10px}
+
+  /* Scrollbar */
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:5px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">DD</div>
+      <div>
+        <div class="brand-text">AT&T Dynamic Defense</div>
+        <div class="brand-sub">IPTECH SV · V1</div>
+      </div>
+    </div>
+
+    <div class="nav-title">Script</div>
+    <div class="nav-item active" data-phase="1"><span class="nav-num">1</span>Opening</div>
+    <div class="nav-item" data-phase="2"><span class="nav-num">2</span>Hook</div>
+    <div class="nav-item" data-phase="3"><span class="nav-num">3</span>Pitch</div>
+    <div class="nav-item" data-phase="4"><span class="nav-num">4</span>Authorization</div>
+    <div class="nav-item" data-phase="5"><span class="nav-num">5</span>Order Details</div>
+
+    <div class="nav-title">Close</div>
+    <div class="nav-item" data-phase="6"><span class="nav-num">6</span>Compliance</div>
+    <div class="nav-item" data-phase="7"><span class="nav-num">7</span>Confirmation</div>
+    <div class="nav-item" data-phase="8"><span class="nav-num">8</span>Objections</div>
+    <div class="nav-item" data-phase="9"><span class="nav-num">9</span>Checklist</div>
+
+    <div class="sidebar-foot">IPTECH SV · Confidential</div>
+  </aside>
+
+  <!-- Mobile horizontal phase nav -->
+  <div class="mobile-phases">
+    <div class="nav-item active" data-phase="1"><span class="nav-num">1</span></div>
+    <div class="nav-item" data-phase="2"><span class="nav-num">2</span></div>
+    <div class="nav-item" data-phase="3"><span class="nav-num">3</span></div>
+    <div class="nav-item" data-phase="4"><span class="nav-num">4</span></div>
+    <div class="nav-item" data-phase="5"><span class="nav-num">5</span></div>
+    <div class="nav-item" data-phase="6"><span class="nav-num">6</span></div>
+    <div class="nav-item" data-phase="7"><span class="nav-num">7</span></div>
+    <div class="nav-item" data-phase="8"><span class="nav-num">8</span></div>
+    <div class="nav-item" data-phase="9"><span class="nav-num">9</span></div>
+  </div>
+
+  <!-- ============ SCRIPT PANEL ============ -->
+  <main class="script">
+
+    <div class="header-bar">
+      <h1>AT&T Dynamic Defense</h1>
+      <div class="sub">Sales Script · Existing AT&T Business Customers</div>
+      <span class="warn-pill">⚠ Fill ALL required fields before submitting. No field should be left empty.</span>
+    </div>
+
+    <!-- ===== PHASE 1: OPENING ===== -->
+    <section class="phase active" data-phase="1">
+      <h2 class="phase-head">Opening & Gatekeeper</h2>
+      <div class="phase-sub">Phase 1 · Identify the decision-maker</div>
+
+      <div class="qf">
+        <h3>📋 Product Quick Facts — Know Before You Dial</h3>
+        <ul>
+          <li><b>Selling:</b> Dynamic Defense <b>Advanced</b> — $65/mo with first <b>2 months FREE</b></li>
+          <li><b>Month-to-month</b>, no long-term contract, cancel anytime</li>
+          <li>No new equipment, no technician visit, no downtime</li>
+          <li>Activates through customer's existing <b>MyAT&T Business profile</b></li>
+          <li>Target: Existing <b>AT&T Business Fiber</b> customers</li>
+        </ul>
+      </div>
+
+      <div class="tag say">Say</div>
+      <div class="say-line">Hi! / Good morning / Good afternoon, this is <b>[AGENT NAME]</b> calling regarding important security information for your AT&T internet service. Are you able to assist me?</div>
+
+      <div class="branches">
+        <div class="branch no">
+          <span class="lbl">IF NO</span>
+          Ask to speak with the Decision Maker (DM), and/or secure the DM name for a future callback.
+        </div>
+        <div class="branch yes">
+          <span class="lbl">IF YES</span>
+          Who am I speaking with? — capture name.
+        </div>
+      </div>
+
+      <div class="tag say">Say</div>
+      <div class="say-line">Good morning / Afternoon <b>[DM NAME]</b>. My name is <b>[AGENT NAME]</b>, an AT&T Solutions Provider calling on a recorded line.</div>
+
+      <div class="compliance"><b>COMPLIANCE:</b> The recorded line disclosure is <b>MANDATORY</b>. Do NOT skip this. It must be stated clearly before continuing the call.</div>
+
+      <div class="warn">Once you reach the DM and the recorded line disclosure is done, proceed to Phase 2.</div>
+    </section>
+
+    <!-- ===== PHASE 2: HOOK ===== -->
+    <section class="phase" data-phase="2">
+      <h2 class="phase-head">The Hook — Cyber Threat Context</h2>
+      <div class="phase-sub">Phase 2 · Set the stage with urgency</div>
+
+      <div class="tag say">Say</div>
+      <div class="say-line">The reason for my call is that <b>cyber threats against businesses have increased significantly</b> — especially attacks targeting <b>point-of-sale systems, credit card terminals, and customer data</b>. Small and mid-sized businesses are being hit particularly hard right now with <b>ransomware</b> and other threats.</div>
+
+      <div class="tip-box"><b>TIP:</b> Speak with urgency but stay calm and consultative. You're NOT trying to scare them — you're informing them. Pause briefly after this line to let it sink in.</div>
+    </section>
+
+    <!-- ===== PHASE 3: PITCH ===== -->
+    <section class="phase" data-phase="3">
+      <h2 class="phase-head">Value Proposition — Dynamic Defense</h2>
+      <div class="phase-sub">Phase 3 · Introduce the product and the offer</div>
+
+      <div class="tag say">Say</div>
+      <div class="say-line">That's why AT&T created <b>Dynamic Defense</b> — a powerful new network-embedded security layer that uses <b>advanced AI to detect and block threats in real time</b> before they ever reach your network or devices.</div>
+
+      <div class="tag say">Say · Price Anchor</div>
+      <div class="say-line">AT&T wants you to experience the power of this AI security layer and is <b>waiving the cost for the first two months</b>. This means you get <b>2 months to try this network-embedded security risk-free</b>. After two months, the service continues at only <b>$65/month with no long-term contract</b>, and you can cancel at any time.</div>
+
+      <div class="tip-box"><b>TIP:</b> Emphasize: <b>"2 MONTHS FREE — RISK FREE."</b> Let the price land. Don't rush into the close.</div>
+
+      <div class="tag say">Say · Frictionless Setup</div>
+      <div class="say-line">Dynamic Defense requires <b>no new equipment, no technician visit, and no downtime</b>. You simply activate it through your existing <b>MyAT&T Business profile</b>, and you get a clear dashboard for real-time visibility and control.</div>
+    </section>
+
+    <!-- ===== PHASE 4: AUTHORIZATION ===== -->
+    <section class="phase" data-phase="4">
+      <h2 class="phase-head">Closing — Authorization</h2>
+      <div class="phase-sub">Phase 4 · Confirm authority and capture verbal consent</div>
+
+      <div class="tag ask">Ask</div>
+      <div class="ask-line">Before we get you activated, quick question — are you the person who manages or has access to the <b>MyAT&T Business profile</b> for the account?</div>
+
+      <div class="branches">
+        <div class="branch yes">
+          <span class="lbl">IF YES</span>
+          Perfect. Then let's go ahead and get your <b>2 months free of AT&T Dynamic Defense Advanced</b> activated right now — sound good?
+        </div>
+        <div class="branch no">
+          <span class="lbl">IF NO</span>
+          No problem — who handles that on your end? → Capture DM Name and schedule callback.
+        </div>
+      </div>
+
+      <div class="tag ask">Ask · Verbal Authorization</div>
+      <div class="ask-line">Are you able to authorize us today to add Dynamic Defense to the account?</div>
+
+      <div class="branches">
+        <div class="branch yes">
+          <span class="lbl">IF YES</span>
+          "Just to confirm on the recorded line, <b>[OFFICE CONTACT NAME]</b>, you're authorizing AT&T to activate the Dynamic Defense Advanced <b>2-months free promotion</b> for <b>[BUSINESS NAME]</b> today. Is that correct?"
+        </div>
+        <div class="branch no">
+          <span class="lbl">IF NO</span>
+          No problem — when will be a good time to reach <b>[DM NAME]</b>? → Schedule callback.
+        </div>
+      </div>
+
+      <div class="compliance"><b>COMPLIANCE:</b> The verbal authorization above <b>MUST</b> be captured on the recorded line, word-for-word. This is your proof of consent. Wait for an audible <b>"Yes"</b> or <b>"That's correct"</b> before moving on.</div>
+    </section>
+
+    <!-- ===== PHASE 5: ORDER DETAILS ===== -->
+    <section class="phase" data-phase="5">
+      <h2 class="phase-head">Order Details</h2>
+      <div class="phase-sub">Phase 5 · Capture business information — fill the form panel as you go →</div>
+
+      <div class="tag transition">Transition</div>
+      <div class="say-line">Great! To get your enrollment started, I just need to confirm a few quick details about your business.</div>
+
+      <ol class="order-list">
+        <li>What is the <b>full legal business name</b>?</li>
+        <li>Is <b>[ADDRESS]</b> the correct service address?</li>
+        <li>Can I get the proper spelling of your <b>first and last name</b>?</li>
+        <li>What is the <b>main telephone number</b> listed for the business?</li>
+        <li>What <b>email</b> will you use to receive the AT&T Dynamic Defense order confirmation and activation link?</li>
+      </ol>
+
+      <div class="tip-box"><b>TIP:</b> Capture each answer in the form panel on the right as you go. Do NOT wait until the end of the call — type as the customer speaks.</div>
+    </section>
+
+    <!-- ===== PHASE 6: COMPLIANCE ===== -->
+    <section class="phase" data-phase="6">
+      <h2 class="phase-head">Compliance Disclosure</h2>
+      <div class="phase-sub">Phase 6 · Required disclosure — read clearly, do not rush</div>
+
+      <div class="compliance"><b>READ WORD-FOR-WORD.</b> Do not paraphrase. AT&T's regulatory and legal disclosure requirements depend on the exact wording below.</div>
+
+      <div class="tag say">Say</div>
+      <div class="say-line">I appreciate your time — we're almost done. AT&T must comply with regulatory and legal requirements to disclose certain information and obtain your consent before we proceed.</div>
+
+      <div class="tag say">Say · Mandatory Disclosure</div>
+      <div class="say-line">You are enrolling today in <b>AT&T Dynamic Defense Advanced</b>. The service costs <b>$65 per month</b> but is waived for the first <b>2 months</b>. The Dynamic Defense order confirmation and activation link is being emailed to <b>[EMAIL ADDRESS]</b>. AT&T Dynamic Defense is a <b>month-to-month service</b> and can be cancelled at any time.</div>
+    </section>
+
+    <!-- ===== PHASE 7: CONFIRMATION ===== -->
+    <section class="phase" data-phase="7">
+      <h2 class="phase-head">Confirmation & Close</h2>
+      <div class="phase-sub">Phase 7 · Wrap up and end on a strong note</div>
+
+      <div class="tag say">Say · Activation Instructions</div>
+      <div class="say-line">Once your Dynamic Defense has been added to your account, you will receive an email with a link to your <b>MyAT&T Business Center</b> for activation and set-up of your Dynamic Defense profile. If you have any trouble accessing the MyAT&T portal, please contact support at <b>1-800-331-0500</b>.</div>
+
+      <div class="tag say">Say · Polite Close</div>
+      <div class="say-line">Thank you for choosing AT&T and for your time today. Have a great day!</div>
+
+      <div class="tip-box"><b>TIP:</b> End the call with energy. The customer just bought — make them feel good about it. This reduces buyer's remorse and cancellation risk.</div>
+
+      <div class="warn">Once the call is wrapped, submit the form on the right → Phase 9 has the final compliance checklist.</div>
+    </section>
+
+    <!-- ===== PHASE 8: OBJECTIONS ===== -->
+    <section class="phase" data-phase="8">
+      <h2 class="phase-head">Objection Handling</h2>
+      <div class="phase-sub">Phase 8 · Use these responses when customers push back</div>
+
+      <h3 style="color:#fff;font-size:14px;margin:8px 0 6px">Top 10 Rebuttals</h3>
+      <table class="obj">
+        <thead><tr><th>Objection</th><th>Recommended Response</th></tr></thead>
+        <tbody>
+          <tr><td>"I already have security / firewall / antivirus."</td><td>Most businesses do. And that's why attackers are taking advantage of this. Dynamic Defense works <b>before</b> your firewall — it blocks threats at the network level using AT&T's AI and threat intelligence, so bad traffic never reaches your devices or firewall. It's an extra layer, not a replacement.</td></tr>
+          <tr><td>"It's too expensive / $65 is a lot."</td><td>I understand. But $65/month is far less than the average cost of a data breach or ransomware incident for small businesses (often tens of thousands in downtime and recovery). Plus, you get the <b>first two months completely free</b> right now, so you can test it with zero risk.</td></tr>
+          <tr><td>"We don't need it / We haven't had any attacks."</td><td>That's great to hear, but most businesses don't realize they've been targeted until something gets through. Attacks are up significantly, especially on POS systems and credit card data. Dynamic Defense stops them in real time before they hit your network — it's <b>proactive</b> protection instead of hoping nothing happens.</td></tr>
+          <tr><td>"I need to think about it / Talk to my IT guy."</td><td>Absolutely, no pressure. Would it help if I send you a one-page overview with the key features? Or I can schedule a quick 5-minute call with you and your IT person to answer any technical questions.</td></tr>
+          <tr><td>"How do I know it won't slow down my internet?"</td><td>It actually improves performance by blocking junk traffic before it reaches your network. It's embedded directly in AT&T's fiber network, so there's no extra hardware or latency added. Most customers see no difference in speed — sometimes even faster browsing.</td></tr>
+          <tr><td>"What if I want to cancel?"</td><td>There's no long-term contract. You can cancel anytime with no termination fees. It just appears as a line item on your existing AT&T bill and can be removed easily through your MyAT&T Business portal.</td></tr>
+          <tr><td>"Is this only for big companies?"</td><td>Not at all — this is specifically built for businesses like yours. AT&T took the same enterprise-grade protection used by large clients and made the Advanced package simple and affordable for small and mid-sized businesses on Business Fiber.</td></tr>
+          <tr><td>"I'm happy with my current provider."</td><td>You don't need to switch providers. Dynamic Defense adds directly onto your existing AT&T Business Fiber service — no changes to your internet provider required.</td></tr>
+          <tr><td>"How much time does it take to set up?"</td><td>Very little — usually under 30 minutes. No tech visit, no new equipment. You activate it through your existing MyAT&T Business dashboard and get instant visibility. I can walk you through it right now if you'd like.</td></tr>
+          <tr><td>"Can you prove it works?"</td><td>Yes — customers are seeing blocked threats within the first few days. You'll have a real-time dashboard showing threats stopped at the network level. Plus, it uses the same AT&T threat intelligence that protects major enterprises.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="color:#fff;font-size:14px;margin:18px 0 6px">Additional Rebuttals</h3>
+      <table class="obj">
+        <thead><tr><th>Objection</th><th>Recommended Response</th></tr></thead>
+        <tbody>
+          <tr><td>"Our IT vendor handles security."</td><td>Dynamic Defense <b>complements</b> your IT vendor by providing automated, up-to-date defenses and proactive reporting at the network level — before traffic even reaches their setup. Your IT vendor will appreciate the dashboard visibility.</td></tr>
+          <tr><td>"We're a small business; hackers won't target us."</td><td>That's actually the most common misconception. <b>Over 40% of cyberattacks target small businesses</b> specifically — because attackers know smaller companies tend to have fewer defenses. Dynamic Defense protects against evolving threats regardless of company size.</td></tr>
+          <tr><td>"We're worried about complexity and disruption."</td><td>Completely understandable. Dynamic Defense is designed for seamless integration — user-friendly controls, no install on your devices, and zero impact on daily operations. Most customers say they barely notice it's there except when they check the dashboard.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ===== PHASE 9: CHECKLIST ===== -->
+    <section class="phase" data-phase="9">
+      <h2 class="phase-head">Agent Compliance Checklist</h2>
+      <div class="phase-sub">Phase 9 · Tap each item to verify before submitting the form</div>
+
+      <div class="compliance"><b>BEFORE SUBMITTING</b> any sale to the Dynamic Defense form, verify <b>EVERY</b> item below was completed on the recorded line. Sales missing any of these items will be rejected.</div>
+
+      <ul class="checklist" id="checklist">
+        <li><span class="cb">✓</span>Recorded line disclosure stated at start of call</li>
+        <li><span class="cb">✓</span>Agent identified as AT&T Solutions Provider</li>
+        <li><span class="cb">✓</span>Confirmed customer is Decision Maker for MyAT&T Business profile</li>
+        <li><span class="cb">✓</span>Verbal authorization captured: customer said YES on recording</li>
+        <li><span class="cb">✓</span>Price disclosed: $65/mo, first 2 months FREE, month-to-month</li>
+        <li><span class="cb">✓</span>Email address confirmed for activation link</li>
+        <li><span class="cb">✓</span>Service address confirmed</li>
+        <li><span class="cb">✓</span>Customer informed of email with activation link</li>
+        <li><span class="cb">✓</span>MyAT&T support number provided: 1-800-331-0500</li>
+        <li><span class="cb">✓</span>All fields completed in the form panel</li>
+      </ul>
+    </section>
+
+    <!-- Phase nav buttons -->
+    <div class="phase-nav">
+      <button class="pbtn" id="prevBtn">← Previous</button>
+      <button class="pbtn" id="nextBtn">Next →</button>
+    </div>
+
+  </main>
+
+  <!-- ============ FORM PANEL ============ -->
+  <aside class="formpanel">
+
+    <div id="formView">
+      <h2>📋 Customer Data — Dynamic Defense</h2>
+      <div class="form-sub">Fill ALL required fields as you collect them on the call.</div>
+      <div class="form-warning">⚠ ALL fields with <span style="color:#ef4444">*</span> are REQUIRED. Do not submit with missing information.</div>
+
+      <form id="ddForm">
+
+        <div class="fgroup">
+          <h4>Agent Tracking</h4>
+          <div class="field"><label>Agent Name <span class="req">*</span></label><input name="agent_name" required></div>
+          <div class="field"><label>Agent ID / Extension <span class="req">*</span></label><input name="agent_id" required></div>
+          <div class="field"><label>Call Recording Link <span class="req">*</span></label><input type="url" name="recording_link" placeholder="https://..." required></div>
+        </div>
+
+        <div class="fgroup">
+          <h4>Business Info</h4>
+          <div class="field"><label>Full Legal Business Name <span class="req">*</span></label><input name="business_name" required></div>
+          <div class="field"><label>Service Address <span class="req">*</span></label><textarea name="service_address" required></textarea></div>
+          <div class="field">
+            <label>Is the service address correct? <span class="req">*</span></label>
+            <div class="radio-row">
+              <label><input type="radio" name="address_correct" value="Yes" required> Yes</label>
+              <label><input type="radio" name="address_correct" value="No"> No</label>
+            </div>
+          </div>
+          <div class="field"><label>If No, enter correct address</label><textarea name="corrected_address"></textarea></div>
+          <div class="field"><label>AT&T Business Fiber Account Number (MyAT&T) <span class="req">*</span></label><input name="att_account" required></div>
+        </div>
+
+        <div class="fgroup">
+          <h4>Decision Maker</h4>
+          <div class="field"><label>DM First Name <span class="req">*</span></label><input name="dm_first" required></div>
+          <div class="field"><label>DM Last Name <span class="req">*</span></label><input name="dm_last" required></div>
+          <div class="field"><label>DM Title / Role</label><input name="dm_title"></div>
+        </div>
+
+        <div class="fgroup">
+          <h4>Contact</h4>
+          <div class="field"><label>Business Phone <span class="req">*</span></label><input type="tel" name="business_phone" required></div>
+          <div class="field"><label>Best Reach Phone <span class="req">*</span></label><input type="tel" name="best_phone" required></div>
+          <div class="field"><label>Email for Activation Link <span class="req">*</span></label><input type="email" name="email" required><div class="hint">Verify spelling carefully — activation link sent here.</div></div>
+        </div>
+
+        <div class="fgroup">
+          <h4>Plan & Compliance</h4>
+          <div class="field"><label>Plan Sold <span class="req">*</span></label>
+            <select name="plan" required>
+              <option value="">— Select —</option>
+              <option value="Dynamic Defense Advanced - $65/mo (2 months FREE)">Dynamic Defense Advanced — $65/mo (2 months FREE)</option>
+            </select>
+          </div>
+          <div class="field"><label>Verbal authorization captured on recorded line? <span class="req">*</span></label>
+            <div class="radio-row">
+              <label><input type="radio" name="verbal_auth" value="Yes" required> Yes</label>
+              <label><input type="radio" name="verbal_auth" value="No"> No</label>
+            </div>
+          </div>
+          <div class="field"><label>Recorded line disclosure given at start of call? <span class="req">*</span></label>
+            <div class="radio-row">
+              <label><input type="radio" name="rec_disclosure" value="Yes" required> Yes</label>
+              <label><input type="radio" name="rec_disclosure" value="No"> No</label>
+            </div>
+          </div>
+          <div class="field"><label>Compliance disclosure read word-for-word? <span class="req">*</span></label>
+            <div class="radio-row">
+              <label><input type="radio" name="compliance_read" value="Yes" required> Yes</label>
+              <label><input type="radio" name="compliance_read" value="No"> No</label>
+            </div>
+          </div>
+          <div class="field"><label>Customer confirmed $65/mo after 2-month promo? <span class="req">*</span></label>
+            <div class="radio-row">
+              <label><input type="radio" name="price_confirmed" value="Yes" required> Yes</label>
+              <label><input type="radio" name="price_confirmed" value="No"> No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="fgroup">
+          <h4>Follow-Up</h4>
+          <div class="field"><label>Callback Needed?</label>
+            <div class="radio-row">
+              <label><input type="radio" name="callback" value="No" checked> No</label>
+              <label><input type="radio" name="callback" value="Yes"> Yes</label>
+            </div>
+          </div>
+          <div class="field"><label>Callback Date & Time (if Yes)</label><input type="datetime-local" name="callback_dt"></div>
+          <div class="field"><label>Agent Notes</label><textarea name="notes" placeholder="Anything supervisor should know..."></textarea></div>
+        </div>
+
+        <div class="form-warning">⚠ AT&T Dynamic Defense is a separate add-on. Confirm the customer understands they will see this as a line item on their existing AT&T Business bill.</div>
+
+        <div class="submit-row">
+          <button type="submit" class="btn btn-primary" id="submitBtn">Submit to Google Sheets</button>
+          <button type="reset" class="btn btn-secondary">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="success-screen" id="successView">
+      <div class="check">✓</div>
+      <h3>Submitted!</h3>
+      <p>Data sent to Google Sheets · Dynamic Defense tab.</p>
+      <button class="btn btn-primary" onclick="resetForm()">Submit Another</button>
+    </div>
+
+  </aside>
+
+</div>
+
+<script>
+/* ============ CONFIG ============ */
+// Replace with your Apps Script Web App URL (same pattern as your V6 form)
+const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+
+/* ============ PHASE NAVIGATION ============ */
+const phases = document.querySelectorAll('.phase');
+const navItems = document.querySelectorAll('.nav-item');
+let currentPhase = 1;
+
+function goToPhase(p){
+  currentPhase = p;
+  phases.forEach(ph => ph.classList.toggle('active', ph.dataset.phase == p));
+  navItems.forEach(n => n.classList.toggle('active', n.dataset.phase == p));
+  document.querySelector('.script').scrollTop = 0;
+  document.getElementById('prevBtn').disabled = (p == 1);
+  document.getElementById('nextBtn').disabled = (p == 9);
+}
+
+navItems.forEach(n => n.addEventListener('click', () => goToPhase(n.dataset.phase)));
+document.getElementById('prevBtn').addEventListener('click', () => { if(currentPhase > 1) goToPhase(currentPhase - 1); });
+document.getElementById('nextBtn').addEventListener('click', () => { if(currentPhase < 9) goToPhase(parseInt(currentPhase) + 1); });
+
+/* ============ CHECKLIST ============ */
+document.querySelectorAll('#checklist li').forEach(li => {
+  li.addEventListener('click', () => li.classList.toggle('checked'));
+});
+
+/* ============ FORM SUBMIT ============ */
+const form = document.getElementById('ddForm');
+const submitBtn = document.getElementById('submitBtn');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const fd = new FormData(form);
+  const data = Object.fromEntries(fd.entries());
+  data.submitted_at = new Date().toISOString();
+  data.product = "AT&T Dynamic Defense";
+
+  if (APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
+    alert("⚠ APPS_SCRIPT_URL not configured.\n\nEdit the HTML file and paste your Apps Script Web App URL into the APPS_SCRIPT_URL constant near the bottom of the file.\n\nForm data captured (test mode):\n\n" + JSON.stringify(data, null, 2));
+    return;
+  }
+
+  submitBtn.textContent = "Submitting...";
+  submitBtn.disabled = true;
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(data)
+    });
+    document.getElementById('formView').style.display = 'none';
+    document.getElementById('successView').classList.add('active');
+  } catch (err) {
+    alert("Error submitting: " + err.message);
+    submitBtn.textContent = "Submit to Google Sheets";
+    submitBtn.disabled = false;
+  }
+});
+
+function resetForm(){
+  form.reset();
+  document.getElementById('formView').style.display = 'block';
+  document.getElementById('successView').classList.remove('active');
+  submitBtn.textContent = "Submit to Google Sheets";
+  submitBtn.disabled = false;
+}
+
+/* Init */
+goToPhase(1);
+</script>
+
+</body>
+</html>
