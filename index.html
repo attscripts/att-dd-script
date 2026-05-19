@@ -293,7 +293,8 @@
       <div class="qf">
         <h3>📋 Product Quick Facts — Know Before You Dial</h3>
         <ul>
-          <li><b>Selling:</b> Dynamic Defense <b>Advanced</b> — $65/mo with first <b>2 months FREE</b></li>
+          <li><b>Closing on:</b> Dynamic Defense <b>Advanced</b> — first <b>2 months FREE</b>, then $65/mo</li>
+          <li><b>Retention path:</b> After promo, customer can stay on Advanced ($65) OR switch to <b>Basic at $15/mo</b></li>
           <li><b>Month-to-month</b>, no long-term contract, cancel anytime</li>
           <li>No new equipment, no technician visit, no downtime</li>
           <li>Activates through customer's existing <b>MyAT&T Business profile</b></li>
@@ -343,7 +344,7 @@
       <div class="say-line">That's why AT&T created <b>Dynamic Defense</b> — a powerful new network-embedded security layer that uses <b>advanced AI to detect and block threats in real time</b> before they ever reach your network or devices.</div>
 
       <div class="tag say">Say · Price Anchor</div>
-      <div class="say-line">AT&T wants you to experience the power of this AI security layer and is <b>waiving the cost for the first two months</b>. This means you get <b>2 months to try this network-embedded security risk-free</b>. After two months, the service continues at only <b>$65/month with no long-term contract</b>, and you can cancel at any time.</div>
+      <div class="say-line">AT&T wants you to experience the power of this AI security layer and is <b>waiving the cost for the first two months</b>. This means you get <b>2 months to experience this network-embedded security for free</b>. After two months, you can retain AT&T Dynamic Defense for as low as <b>$15/month with no long-term contract or commitment</b>.</div>
 
       <div class="tip-box"><b>TIP:</b> Emphasize: <b>"2 MONTHS FREE — RISK FREE."</b> Let the price land. Don't rush into the close.</div>
 
@@ -417,7 +418,7 @@
       <div class="say-line">I appreciate your time — we're almost done. AT&T must comply with regulatory and legal requirements to disclose certain information and obtain your consent before we proceed.</div>
 
       <div class="tag say">Say · Mandatory Disclosure</div>
-      <div class="say-line">You are enrolling today in <b>AT&T Dynamic Defense Advanced</b>. The service costs <b>$65 per month</b> but is waived for the first <b>2 months</b>. The Dynamic Defense order confirmation and activation link is being emailed to <b>[EMAIL ADDRESS]</b>. AT&T Dynamic Defense is a <b>month-to-month service</b> and can be cancelled at any time.</div>
+      <div class="say-line">You are enrolling today in <b>AT&T Dynamic Defense Advanced</b>. AT&T is waiving the monthly cost of <b>$65/mo</b> for the first <b>2 months</b>. After 2 months you can <b>retain Dynamic Defense Advanced</b> or change to <b>Basic Dynamic Defense for only $15/mo</b>. An order confirmation and activation link is being emailed to <b>[EMAIL ADDRESS]</b>. AT&T Dynamic Defense is a <b>month-to-month service</b> and can be cancelled at any time.</div>
     </section>
 
     <!-- ===== PHASE 7: CONFIRMATION ===== -->
@@ -481,7 +482,7 @@
         <li><span class="cb">✓</span>Agent identified as AT&T Solutions Provider</li>
         <li><span class="cb">✓</span>Confirmed customer is Decision Maker for MyAT&T Business profile</li>
         <li><span class="cb">✓</span>Verbal authorization captured: customer said YES on recording</li>
-        <li><span class="cb">✓</span>Price disclosed: $65/mo, first 2 months FREE, month-to-month</li>
+        <li><span class="cb">✓</span>Pricing disclosed: 2 months FREE, then $65/mo Advanced OR $15/mo Basic, month-to-month</li>
         <li><span class="cb">✓</span>Email address confirmed for activation link</li>
         <li><span class="cb">✓</span>Service address confirmed</li>
         <li><span class="cb">✓</span>Customer informed of email with activation link</li>
@@ -544,11 +545,12 @@
 
         <div class="fgroup">
           <h4>Plan & Compliance</h4>
-          <div class="field"><label>Plan Sold <span class="req">*</span></label>
+          <div class="field"><label>Plan Sold (closing) <span class="req">*</span></label>
             <select name="plan" required>
               <option value="">— Select —</option>
               <option value="Dynamic Defense Advanced - $65/mo (2 months FREE)">Dynamic Defense Advanced — $65/mo (2 months FREE)</option>
             </select>
+            <div class="hint">All sales close on Advanced. The Basic $15/mo option is only mentioned as a retention path AFTER the 2-month promo ends.</div>
           </div>
           <div class="field"><label>Verbal authorization captured on recorded line? <span class="req">*</span></label>
             <div class="radio-row">
@@ -568,11 +570,12 @@
               <label><input type="radio" name="compliance_read" value="No"> No</label>
             </div>
           </div>
-          <div class="field"><label>Customer confirmed $65/mo after 2-month promo? <span class="req">*</span></label>
+          <div class="field"><label>Customer understands pricing after 2-month promo? <span class="req">*</span></label>
             <div class="radio-row">
               <label><input type="radio" name="price_confirmed" value="Yes" required> Yes</label>
               <label><input type="radio" name="price_confirmed" value="No"> No</label>
             </div>
+            <div class="hint">Customer must understand: after 2 months they can keep Advanced at $65/mo OR switch to Basic at $15/mo. Either way, month-to-month, cancel anytime.</div>
           </div>
         </div>
 
@@ -611,7 +614,7 @@
 <script>
 /* ============ CONFIG ============ */
 // Replace with your Apps Script Web App URL (same pattern as your V6 form)
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYfvW6_R6F7zbx4YuzoSuf6IOfjAvfRJ81aZQqO_egwmmgmuYdtmKWTcSzOv5Lbovu/exec";
+const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
 
 /* ============ PHASE NAVIGATION ============ */
 const phases = document.querySelectorAll('.phase');
