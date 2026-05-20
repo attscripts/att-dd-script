@@ -245,14 +245,13 @@
     <div class="nav-item active" data-phase="1"><span class="nav-num">1</span>Opening</div>
     <div class="nav-item" data-phase="2"><span class="nav-num">2</span>Pitch</div>
     <div class="nav-item" data-phase="3"><span class="nav-num">3</span>Soft Close</div>
-    <div class="nav-item" data-phase="4"><span class="nav-num">4</span>Authorization</div>
-    <div class="nav-item" data-phase="5"><span class="nav-num">5</span>Order Details</div>
+    <div class="nav-item" data-phase="4"><span class="nav-num">4</span>Order Details</div>
 
     <div class="nav-title">Close</div>
-    <div class="nav-item" data-phase="6"><span class="nav-num">6</span>Compliance</div>
-    <div class="nav-item" data-phase="7"><span class="nav-num">7</span>Confirmation</div>
-    <div class="nav-item" data-phase="8"><span class="nav-num">8</span>Objections</div>
-    <div class="nav-item" data-phase="9"><span class="nav-num">9</span>Checklist</div>
+    <div class="nav-item" data-phase="5"><span class="nav-num">5</span>Compliance</div>
+    <div class="nav-item" data-phase="6"><span class="nav-num">6</span>Confirmation</div>
+    <div class="nav-item" data-phase="7"><span class="nav-num">7</span>Objections</div>
+    <div class="nav-item" data-phase="8"><span class="nav-num">8</span>Checklist</div>
 
     <button class="theme-toggle" id="themeToggle" type="button">
       <span class="ico" id="themeIco">🌙</span>
@@ -273,7 +272,6 @@
     <div class="nav-item" data-phase="6"><span class="nav-num">6</span></div>
     <div class="nav-item" data-phase="7"><span class="nav-num">7</span></div>
     <div class="nav-item" data-phase="8"><span class="nav-num">8</span></div>
-    <div class="nav-item" data-phase="9"><span class="nav-num">9</span></div>
   </div>
 
   <!-- ============ SCRIPT PANEL ============ -->
@@ -303,20 +301,6 @@
       </div>
 
       <div class="tag say">Say</div>
-      <div class="say-line">Hi! / Good morning / Good afternoon, this is <b>[AGENT NAME]</b> calling regarding important security information for your AT&T internet service. Are you able to assist me?</div>
-
-      <div class="branches">
-        <div class="branch no">
-          <span class="lbl">IF NO</span>
-          Ask to speak with the Decision Maker (DM), and/or secure the DM name for a future callback.
-        </div>
-        <div class="branch yes">
-          <span class="lbl">IF YES</span>
-          Who am I speaking with? — capture name.
-        </div>
-      </div>
-
-      <div class="tag say">Say</div>
       <div class="say-line">Good morning / Afternoon <b>[DM NAME]</b>. My name is <b>[AGENT NAME]</b>, an AT&T Solutions Provider calling on a recorded line.</div>
 
       <div class="compliance"><b>COMPLIANCE:</b> The recorded line disclosure is <b>MANDATORY</b>. Do NOT skip this. It must be stated clearly before continuing the call.</div>
@@ -330,12 +314,12 @@
       <div class="phase-sub">Phase 2 · Threat context + product intro + 2-month free trial</div>
 
       <div class="tag say">Say</div>
-      <div class="say-line">The reason for my call is AT&T wants you to experience the power of its new AI security layer, <b>Dynamic Defense</b>. As cyber threats against small businesses increase, now is the time to safeguard your <b>customer data, point-of-sale systems, and credit card terminals</b>.</div>
+      <div class="say-line">The reason for my call is AT&T wants you to experience <b>Dynamic Defense</b>. As cyber threats against small businesses increase, now is the time to safeguard your <b>customer data and credit card terminals</b>.</div>
 
       <div class="tag say">Say</div>
-      <div class="say-line">Even if you have an existing solution, AT&T Dynamic Defense works on a <b>network level</b> preventing the threat from ever hitting your network. The best part is, <b>AT&T is waiving the cost of Dynamic Defense Advance for the first 2 months</b>. This means you get to not only <b>try the service for free</b>, but your business will be <b>safeguarded from attacks for the next two months at no cost to you</b>.</div>
+      <div class="say-line">Even if you have an existing solution, AT&T Dynamic Defense works on a <b>network level</b> preventing the threat from ever hitting your network. AT&T is <b>waiving the cost of Dynamic Defense Advance for the first 2 months</b>. This means you get to <b>try the service for free</b>.</div>
 
-      <div class="tip-box"><b>TIP:</b> Speak calmly and consultatively. You're NOT trying to scare them — you're informing them and offering protection. Let the "2 months FREE" land before the soft close below.</div>
+      <div class="tip-box"><b>TIP:</b> Speak calmly and consultatively. You're NOT trying to scare them — you're informing them and offering protection. Let the "2 months FREE" land before the soft close in the next step.</div>
     </section>
 
     <!-- ===== PHASE 3: SOFT CLOSE + FRICTIONLESS SETUP ===== -->
@@ -352,46 +336,10 @@
       <div class="say-line">Dynamic Defense requires <b>no new equipment, no technician visit, and no downtime</b>. You simply activate it through your existing <b>MyAT&T Business profile</b>, and you get a clear dashboard for real-time visibility and control.</div>
     </section>
 
-    <!-- ===== PHASE 4: AUTHORIZATION ===== -->
+    <!-- ===== PHASE 4: ORDER DETAILS ===== -->
     <section class="phase" data-phase="4">
-      <h2 class="phase-head">Closing — Authorization</h2>
-      <div class="phase-sub">Phase 4 · Confirm authority and capture verbal consent</div>
-
-      <div class="tag ask">Ask</div>
-      <div class="ask-line">Before we get you activated, quick question — are you the person who manages or has access to the <b>MyAT&T Business profile</b> for the account?</div>
-
-      <div class="branches">
-        <div class="branch yes">
-          <span class="lbl">IF YES</span>
-          Perfect. Then let's go ahead and get your <b>2 months free of AT&T Dynamic Defense Advanced</b> activated right now — sound good?
-        </div>
-        <div class="branch no">
-          <span class="lbl">IF NO</span>
-          No problem — who handles that on your end? → Capture DM Name and schedule callback.
-        </div>
-      </div>
-
-      <div class="tag ask">Ask · Verbal Authorization</div>
-      <div class="ask-line">Are you able to authorize us today to add Dynamic Defense to the account?</div>
-
-      <div class="branches">
-        <div class="branch yes">
-          <span class="lbl">IF YES</span>
-          "Just to confirm on the recorded line, <b>[OFFICE CONTACT NAME]</b>, you're authorizing AT&T to activate the Dynamic Defense Advanced <b>2-months free promotion</b> for <b>[BUSINESS NAME]</b> today. Is that correct?"
-        </div>
-        <div class="branch no">
-          <span class="lbl">IF NO</span>
-          No problem — when will be a good time to reach <b>[DM NAME]</b>? → Schedule callback.
-        </div>
-      </div>
-
-      <div class="compliance"><b>COMPLIANCE:</b> The verbal authorization above <b>MUST</b> be captured on the recorded line, word-for-word. This is your proof of consent. Wait for an audible <b>"Yes"</b> or <b>"That's correct"</b> before moving on.</div>
-    </section>
-
-    <!-- ===== PHASE 5: ORDER DETAILS ===== -->
-    <section class="phase" data-phase="5">
       <h2 class="phase-head">Order Details</h2>
-      <div class="phase-sub">Phase 5 · Capture business information — fill the form panel as you go →</div>
+      <div class="phase-sub">Phase 4 · Capture business information — fill the form panel as you go →</div>
 
       <div class="tag transition">Transition</div>
       <div class="say-line">Great! To get your enrollment started, I just need to confirm a few quick details about your business.</div>
@@ -408,9 +356,9 @@
     </section>
 
     <!-- ===== PHASE 6: COMPLIANCE ===== -->
-    <section class="phase" data-phase="6">
+    <section class="phase" data-phase="5">
       <h2 class="phase-head">Compliance Disclosure</h2>
-      <div class="phase-sub">Phase 6 · Required disclosure — read clearly, do not rush</div>
+      <div class="phase-sub">Phase 5 · Required disclosure — read clearly, do not rush</div>
 
       <div class="compliance"><b>READ WORD-FOR-WORD.</b> Do not paraphrase. AT&T's regulatory and legal disclosure requirements depend on the exact wording below.</div>
 
@@ -422,9 +370,9 @@
     </section>
 
     <!-- ===== PHASE 7: CONFIRMATION ===== -->
-    <section class="phase" data-phase="7">
+    <section class="phase" data-phase="6">
       <h2 class="phase-head">Confirmation & Close</h2>
-      <div class="phase-sub">Phase 7 · Wrap up and end on a strong note</div>
+      <div class="phase-sub">Phase 6 · Wrap up and end on a strong note</div>
 
       <div class="tag say">Say · Activation Instructions</div>
       <div class="say-line">Once your Dynamic Defense has been added to your account, you will receive an email with a link to your <b>MyAT&T Business Center</b> for activation and set-up of your Dynamic Defense profile. If you have any trouble accessing the MyAT&T portal, please contact support at <b>1-800-331-0500</b>.</div>
@@ -434,13 +382,13 @@
 
       <div class="tip-box"><b>TIP:</b> End the call with energy. The customer just bought — make them feel good about it. This reduces buyer's remorse and cancellation risk.</div>
 
-      <div class="warn">Once the call is wrapped, submit the form on the right → Phase 9 has the final compliance checklist.</div>
+      <div class="warn">Once the call is wrapped, submit the form on the right → Phase 8 has the final compliance checklist.</div>
     </section>
 
     <!-- ===== PHASE 8: OBJECTIONS ===== -->
-    <section class="phase" data-phase="8">
+    <section class="phase" data-phase="7">
       <h2 class="phase-head">Objection Handling</h2>
-      <div class="phase-sub">Phase 8 · Use these responses when customers push back</div>
+      <div class="phase-sub">Phase 7 · Use these responses when customers push back</div>
 
       <h3 style="color:var(--text-strong);font-size:14px;margin:8px 0 6px">Top 10 Rebuttals</h3>
       <table class="obj">
@@ -470,9 +418,9 @@
     </section>
 
     <!-- ===== PHASE 9: CHECKLIST ===== -->
-    <section class="phase" data-phase="9">
+    <section class="phase" data-phase="8">
       <h2 class="phase-head">Agent Compliance Checklist</h2>
-      <div class="phase-sub">Phase 9 · Tap each item to verify before submitting the form</div>
+      <div class="phase-sub">Phase 8 · Tap each item to verify before submitting the form</div>
 
       <div class="compliance"><b>BEFORE SUBMITTING</b> any sale to the Dynamic Defense form, verify <b>EVERY</b> item below was completed on the recorded line. Sales missing any of these items will be rejected.</div>
 
@@ -626,12 +574,12 @@ function goToPhase(p){
   navItems.forEach(n => n.classList.toggle('active', n.dataset.phase == p));
   document.querySelector('.script').scrollTop = 0;
   document.getElementById('prevBtn').disabled = (p == 1);
-  document.getElementById('nextBtn').disabled = (p == 9);
+  document.getElementById('nextBtn').disabled = (p == 8);
 }
 
 navItems.forEach(n => n.addEventListener('click', () => goToPhase(n.dataset.phase)));
 document.getElementById('prevBtn').addEventListener('click', () => { if(currentPhase > 1) goToPhase(currentPhase - 1); });
-document.getElementById('nextBtn').addEventListener('click', () => { if(currentPhase < 9) goToPhase(parseInt(currentPhase) + 1); });
+document.getElementById('nextBtn').addEventListener('click', () => { if(currentPhase < 8) goToPhase(parseInt(currentPhase) + 1); });
 
 /* ============ CHECKLIST ============ */
 document.querySelectorAll('#checklist li').forEach(li => {
